@@ -6,14 +6,17 @@ import sys
 from _thread import *
 
 
-
+#intended to be used in a sepaerate thread
+# than the sending of messages
 def msg_recv (conn, i):
     while True:
         sockets_list = [sys.stdin, server]
         read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
         for socks in read_sockets:
             if socks == server:
+                #recive message
                 message = socks.recv(2048)
+                #decode and print
                 print (str(message.decode()))
 
 
@@ -41,7 +44,9 @@ start_new_thread(msg_recv, (server, 5))
 while True:
     sockets_list = [sys.stdin, server]
     read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
+    #get user input
     message = input()
+    #encode msg and send to server
     server.send(message.encode())
 
 server.close()
