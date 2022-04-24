@@ -3,6 +3,20 @@
 import socket
 import select
 import sys
+from _thread import *
+
+
+
+def msg_recv (conn, i):
+    while True:
+        sockets_list = [sys.stdin, server]
+        read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
+        for socks in read_sockets:
+            if socks == server:
+                message = socks.recv(2048)
+                print (str(message.decode()))
+
+
 
 
 print("Starting Client...\n")
@@ -20,20 +34,16 @@ PORT = int(sys.argv[2])
 print("Port: " + str(PORT))
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print("Attempting to connect to specified server...")
 server.connect((IP_ADDR, PORT))
-print("Connected")
+
+
+start_new_thread(msg_recv, (server, 5))
 while True:
-    # maintains a list of possible input streams
     sockets_list = [sys.stdin, server]
     read_sockets,write_socket, error_socket = select.select(sockets_list,[],[])
- 
-    for socks in read_sockets:
-        if socks == server:
-            message = socks.recv(2048)
-        else:
-            message = sys.stdin.readline()
-            server.send(message.encode())
+    message = input()
+    server.send(message.encode())
+
 server.close()
 
 
