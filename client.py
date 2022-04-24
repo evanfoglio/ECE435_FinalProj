@@ -20,9 +20,9 @@ PORT = int(sys.argv[2])
 print("Port: " + str(PORT))
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+print("Attempting to connect to specified server...")
 server.connect((IP_ADDR, PORT))
-
+print("Connected")
 while True:
     # maintains a list of possible input streams
     sockets_list = [sys.stdin, server]
