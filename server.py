@@ -23,6 +23,34 @@ print("IP Address: " + IP_ADDR)
 PORT = int(sys.argv[2])
 print("Port: " + str(PORT))
 
+connList = []
+
+
+def client_multithread(conn, addr):
+
+    while True:
+        try:
+            #see if theres a message
+            msg = conn.recv(2048)
+            #if there is a message,
+            if msg :
+                print("msg rec")
+                print("msg type: " + str(type(message)))
+                print("str(msg): " + type(type(message)))
+                broadcast(addr[0] + " said: " + msg, conn)
+        # if theres no message, then just check again
+        except:
+            continue
+
+def brodcast(msg, connection):
+    for client in conList:
+        if client != connection:
+            try:
+                client.send(msg)
+            except:
+                client.close()
+                connList.remove(client)
+
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -32,26 +60,12 @@ server.bind((IP_ADDR, PORT))
 
 server.listen(100)
 
-conn, addr = server.accept()
- 
-# prints the address of the user that just connected
-print (addr[0] + " connected")
-
 while True:
-    try:
-        message = conn.recv(2048)
-        if message:
-            print(addr[0] + "said " + message.decode())
-            conn.close()
-            server.close()
-            sys.exit()
-    except:
-        continue
-
-
-
-
-
+    
+    conn, addr = server.accept()
+    connList.append(conn)
+    print(addr[0] + " connected")
+    start_new_thread(client_multithread(conn, addr))
 
 conn.close()
 server.close()
