@@ -28,7 +28,7 @@ connList = []
 
 def client_multithread(conn, addr):
     global connList
-    conn.send("You have entered the Matrix".encode())
+    conn.send("You have entered the Python Chatroom\n\n".encode())
     while True:
         try:
             #see if theres a message
@@ -55,7 +55,6 @@ def broadcast(msg, connection):
                 if connection in connList:
                     connList.remove(client)
 
-print("SERVER INIT")
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -63,13 +62,11 @@ server.bind((IP_ADDR, PORT))
 
 
 server.listen(100)
-print("SERVER LISTENING")
 
 
 while True:
     
     conn, addr = server.accept()
-    print("ACEPTED")
     connList.append(conn)
     print(addr[0] + " connected")
     
